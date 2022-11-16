@@ -35,9 +35,11 @@ class OptionsActivity : AppCompatActivity() {
                 progressChangedValue = progress
                 textView.text = progressChangedValue.toString()
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar) {
                 textView.text = progressChangedValue.toString()
             }
+
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 textView.text = progressChangedValue.toString()
             }

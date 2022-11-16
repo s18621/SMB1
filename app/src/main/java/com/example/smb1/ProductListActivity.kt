@@ -1,16 +1,12 @@
 package com.example.smb1
 
 import android.content.Intent
-import com.example.smb1.Models.ModelAdapter
-import com.example.smb1.Models.ModelItem
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import androidx.core.view.get
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.finansemanager.database.Shared
+import com.example.smb1.Models.ModelAdapter
 import com.example.smb1.Models.dbModel
 import com.example.smb1.database.AppDatabase
 import com.example.smb1.databinding.ActivityProductListBinding
@@ -20,12 +16,11 @@ import kotlin.concurrent.thread
 class ProductListActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityProductListBinding.inflate(layoutInflater) }
-    private val modelAdapter by lazy {ModelAdapter()}
+    private val modelAdapter by lazy { ModelAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
 
 
         val addButton: FloatingActionButton = binding.addValue

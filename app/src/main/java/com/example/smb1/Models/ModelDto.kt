@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "model")
-data class ModelDto (
+data class ModelDto(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo
@@ -16,7 +16,7 @@ data class ModelDto (
     val quantity: Int,
     @ColumnInfo
     var bought: Boolean
-){
+) {
 
 
 }

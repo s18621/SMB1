@@ -6,7 +6,7 @@
     <FrameLayout
         android:id="@+id/settings"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,9 +27,9 @@
                 android:id="@+id/getColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_gravity="center"
                 android:entries="@array/choseColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -68,13 +68,12 @@
                 android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
-                android:padding="10dp"
+                android:layout_weight="1"
                 android:max="36"
                 android:min="18"
-                />
+                android:padding="10dp" />
 
             <Button
                 android:id="@+id/saveButton"

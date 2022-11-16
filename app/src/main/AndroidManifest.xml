@@ -29,8 +29,8 @@
         </activity>
         <activity
             android:name=".ProductListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

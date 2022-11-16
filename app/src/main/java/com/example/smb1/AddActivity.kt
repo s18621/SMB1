@@ -2,10 +2,10 @@ package com.example.smb1
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import com.example.finansemanager.database.Shared
 import com.example.smb1.Models.ModelDto
 import com.example.smb1.databinding.ActivityAddBinding
@@ -18,7 +18,7 @@ class AddActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-         binding.Add.setOnClickListener {
+        binding.Add.setOnClickListener {
             onSave(binding.root)
             val intent = Intent(this, ProductListActivity::class.java)
             startActivity(intent)
@@ -26,7 +26,7 @@ class AddActivity : AppCompatActivity() {
 
     }
 
-    private fun onSave(view: View){
+    private fun onSave(view: View) {
 
         val itemName = binding.itemName.text.toString().trim()
         val price = binding.price.text.toString().trim()
@@ -58,7 +58,7 @@ class AddActivity : AppCompatActivity() {
 
 
     private fun validate(text: String, editText: EditText): Boolean {
-        return if("" == text) {
+        return if ("" == text) {
             editText.requestFocus()
             editText.error = "Wrong Value"
             false
