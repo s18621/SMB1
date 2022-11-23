@@ -6,7 +6,7 @@ import androidx.room.*
 interface ModelDao {
 
     @Insert
-    fun save(myModel: ModelDto): Long
+    suspend fun save(myModel: ModelDto): Long
 
     @Update
     fun update(myModel: ModelDto)
@@ -19,4 +19,10 @@ interface ModelDao {
 
     @Query("SELECT * FROM model;")
     fun getAll(): List<ModelDto>
+
+    @Query("SELECT * FROM model WHERE id = :id;")
+    suspend fun getSelected(id: Long): ModelDto
+
+    @Query("UPDATE model SET price = :price, quantity = :quantity, itemName = :name, bought = :bought WHERE id = :id")
+    suspend fun updateFromId(id: Long, price: Float, quantity: Int, name: String, bought: Boolean)
 }
