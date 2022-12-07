@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,11 +17,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.os.HandlerCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.finansemanager.database.Shared
 import com.example.smb1.ProductListActivity
 import com.example.smb1.R
+import com.example.smb1.databaseRepo
 import com.example.smb1.databinding.ItemModelBinding
-import kotlin.concurrent.thread
+import com.google.firebase.database.FirebaseDatabase
 
 class ModelItem(private val binding: ItemModelBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -31,23 +32,18 @@ class ModelItem(private val binding: ItemModelBinding) : RecyclerView.ViewHolder
             quantity.text = model.quantity.toString()
             bought.isChecked = model.bought
         }
+        Log.e("ModelAdapter", "ModelItem bind")
     }
 }
 
 class ModelAdapter() : RecyclerView.Adapter<ModelItem>() {
 
-    private var myItems: List<ModelDto> = emptyList()
     private var color: Int? = null
     private var font_size: Int? = null
+    private lateinit var repo :databaseRepo
 
     private val handler = HandlerCompat.createAsync(Looper.getMainLooper())
-    var models: MutableList<dbModel> = mutableListOf<dbModel>()
-        set(value) {
-            field = value
-            handler.post {
-                notifyDataSetChanged()
-            }
-        }
+    var allGroceries: MutableList<dbModel> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModelItem {
         val binding = ItemModelBinding.inflate(
@@ -55,91 +51,86 @@ class ModelAdapter() : RecyclerView.Adapter<ModelItem>() {
             parent,
             false
         )
+        val firebaseDatabase = FirebaseDatabase.getInstance("https://smbgroceries-default-rtdb.europe-west1.firebasedatabase.app")
+        repo =  databaseRepo(firebaseDatabase)
         return ModelItem(binding)
     }
 
     override fun onBindViewHolder(holder: ModelItem, position: Int) {
-        holder.bind(models[position])
-        getAll()
+        holder.bind(allGroceries[position])
+
+        Log.e("ModelAdapter", "Model Adapter values: $allGroceries")
+
         load(holder.itemView.context)
         loadFont(holder)
 
         //Remove Item
         holder.itemView.findViewById<Button>(R.id.Delete).setOnClickListener {
-            val deletedItem = myItems[position].itemName
+            Log.e("ModelAdapter", "Position at start: $position")
+            val deletedItem = allGroceries[position].itemName
             Toast.makeText(it.context, "Successfully Deleted $deletedItem", Toast.LENGTH_SHORT)
-                .show();
-            deleteDao(myItems[position])
-            myItems.drop(position)
-            models.removeAt(position)
-            myItems = myItems.dropLast(myItems.size)
-            getAll()
+                .show()
+            repo.delete(allGroceries[position])
+            Log.e("ModelAdapter", "allG: $allGroceries, size: $itemCount, position: $position")
+
+            allGroceries.removeAt(position)
+
+            Log.e("ModelAdapter", "After Del allG: $allGroceries, size: $itemCount, position: $position")
+
             this.notifyItemRemoved(position)
+            this.notifyItemRangeRemoved(position, 1)
         }
 
         //Edit Item
         holder.itemView.findViewById<Button>(R.id.Edit).setOnClickListener {
 
-            val dialog: Dialog = Dialog(it.context)
+            val dialog = Dialog(it.context)
             dialog.setContentView(R.layout.activity_add)
             dialog.findViewById<ConstraintLayout>(R.id.topPanel).background = color!!.toDrawable()
 
             val eName = dialog.findViewById<TextView>(R.id.itemName)
-            eName.text = myItems[position].itemName
+            eName.text = allGroceries[position].itemName
 
             val price = dialog.findViewById<TextView>(R.id.price)
-            price.text = myItems[position].price.toString()
+            price.text = allGroceries[position].price.toString()
 
             val quantity = dialog.findViewById<TextView>(R.id.quantity)
-            quantity.text = myItems[position].quantity.toString()
+            quantity.text = allGroceries[position].quantity.toString()
 
             val button = dialog.findViewById<Button>(R.id.Add)
             button.text = "Save"
 
             button.setOnClickListener {
-                val newModel = ModelDto(
-                    myItems[position].id,
-                    price.text.toString().toFloat(),
+                val dbModel = dbModel(
+                    allGroceries[position].id,
+                    price.text.toString().toDouble(),
                     eName.text.toString(),
                     quantity.text.toString().toInt(),
-                    myItems[position].bought
+                    allGroceries[position].bought
                 )
-                saveDao(newModel)
+                val intent = Intent(it.context, ProductListActivity::class.java)
+                it.context.startActivity(intent)
+
                 dialog.dismiss()
-                val intent = Intent(holder.itemView.context, ProductListActivity::class.java)
-                holder.itemView.context.startActivity(intent)
+                repo.update(dbModel)
+                this.notifyItemChanged(position)
+
             }
             dialog.show()
+
         }
 
         holder.itemView.findViewById<ConstraintLayout>(R.id.bgColor).background =
             color!!.toDrawable()
         //TODO: Think about this cheesy tactic
+
         holder.itemView.findViewById<CheckBox>(R.id.bought).setOnClickListener {
-            myItems[position].bought = holder.itemView.findViewById<CheckBox>(R.id.bought).isChecked
-            saveDao(myItems)
+            allGroceries[position].bought = holder.itemView.findViewById<CheckBox>(R.id.bought).isChecked
+            repo.update(allGroceries[position])
         }
     }
 
-    override fun getItemCount(): Int = models.size
-
-    private fun saveDao(it: List<ModelDto>) {
-        thread {
-            Shared.db?.modelBase?.update(it)
-        }
-    }
-
-    private fun saveDao(it: ModelDto) {
-        thread {
-            Shared.db?.modelBase?.update(it)
-        }
-    }
-
-    private fun deleteDao(it: ModelDto) {
-        thread {
-            Shared.db?.modelBase?.delete(it)
-        }
-    }
+    override fun getItemCount(): Int = allGroceries.size
 
     private fun loadFont(holder: ModelItem) {
         holder.itemView.findViewById<TextView>(R.id.textView6)
@@ -156,10 +147,6 @@ class ModelAdapter() : RecyclerView.Adapter<ModelItem>() {
             .setTextSize(TypedValue.COMPLEX_UNIT_DIP, font_size!!.toFloat())
         holder.itemView.findViewById<TextView>(R.id.textView10)
             .setTextSize(TypedValue.COMPLEX_UNIT_DIP, font_size!!.toFloat())
-    }
-
-    private fun getAll() = thread {
-        myItems = Shared.db?.modelBase?.getAll()!!
     }
 
     private fun load(context: Context) {

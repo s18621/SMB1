@@ -10,7 +10,9 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.finansemanager.database.Shared
 import com.example.smb1.Models.ModelDto
+import com.example.smb1.Models.dbModel
 import com.example.smb1.databinding.ActivityAddBinding
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -89,6 +91,15 @@ class AddActivity : AppCompatActivity() {
                 bought = bought
             )
 
+            val dbModel = dbModel(
+                "0",
+                price.toDouble(),
+                itemName,
+                quantity.toInt(),
+                bought
+            )
+            saveFB(dbModel)
+
             runBlocking {
                 val job = launch {
                     id = Shared.db?.modelBase?.save(newModel)
@@ -103,6 +114,13 @@ class AddActivity : AppCompatActivity() {
             finish()
         }
 
+    }
+
+    private fun saveFB(dbModel: dbModel){
+        val firebaseDatabase:FirebaseDatabase = FirebaseDatabase.getInstance("https://smbgroceries-default-rtdb.europe-west1.firebasedatabase.app")
+        val repo = databaseRepo(firebaseDatabase)
+        repo.insert(dbModel)
+        Log.e("SAVEFB", "Save firestore in funciton")
     }
 
     private fun sendMessage(

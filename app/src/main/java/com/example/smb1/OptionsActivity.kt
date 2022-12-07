@@ -25,6 +25,10 @@ class OptionsActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.cancelButton.setOnClickListener {
+            finish()
+        }
+
 
     }
 
