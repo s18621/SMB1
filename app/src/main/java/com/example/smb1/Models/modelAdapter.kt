@@ -108,11 +108,14 @@ class ModelAdapter() : RecyclerView.Adapter<ModelItem>() {
                     quantity.text.toString().toInt(),
                     allGroceries[position].bought
                 )
-                val intent = Intent(it.context, ProductListActivity::class.java)
-                it.context.startActivity(intent)
+//                val intent = Intent(it.context, ProductListActivity::class.java)
+//                it.context.startActivity(intent)
+
 
                 dialog.dismiss()
                 repo.update(dbModel)
+                allGroceries.removeAt(position)
+                this.notifyItemRangeRemoved(position,1)
                 this.notifyItemChanged(position)
 
             }

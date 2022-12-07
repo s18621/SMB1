@@ -10,7 +10,9 @@ import com.example.smb1.Models.dbModel
 import com.example.smb1.databinding.ActivityProductListBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.*
 
+@OptIn(DelicateCoroutinesApi::class)
 class ProductListActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityProductListBinding.inflate(layoutInflater) }
@@ -23,6 +25,16 @@ class ProductListActivity : AppCompatActivity() {
     init {
         firebaseDatabase = FirebaseDatabase.getInstance("https://smbgroceries-default-rtdb.europe-west1.firebasedatabase.app")
         repo = databaseRepo(firebaseDatabase)
+
+        val dbModel = dbModel(
+            "0",
+            2.99,
+            "Test",
+            1,
+            true
+        )
+        repo.insert(dbModel)
+        repo.delete(dbModel)
         allGroceries = repo.allGroceries
     }
 
