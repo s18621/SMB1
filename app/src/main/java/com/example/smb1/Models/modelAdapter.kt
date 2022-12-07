@@ -32,7 +32,6 @@ class ModelItem(private val binding: ItemModelBinding) : RecyclerView.ViewHolder
             quantity.text = model.quantity.toString()
             bought.isChecked = model.bought
         }
-        Log.e("ModelAdapter", "ModelItem bind")
     }
 }
 
@@ -58,9 +57,6 @@ class ModelAdapter() : RecyclerView.Adapter<ModelItem>() {
 
     override fun onBindViewHolder(holder: ModelItem, position: Int) {
         holder.bind(allGroceries[position])
-
-        Log.e("ModelAdapter", "Model Adapter values: $allGroceries")
-
         load(holder.itemView.context)
         loadFont(holder)
 
@@ -110,7 +106,6 @@ class ModelAdapter() : RecyclerView.Adapter<ModelItem>() {
                 )
 //                val intent = Intent(it.context, ProductListActivity::class.java)
 //                it.context.startActivity(intent)
-
 
                 dialog.dismiss()
                 repo.update(dbModel)

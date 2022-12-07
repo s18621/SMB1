@@ -1,5 +1,6 @@
 package com.example.smb1
 
+import android.util.Log
 import com.example.smb1.Models.dbModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -69,22 +70,6 @@ class databaseRepo(private val fbdb: FirebaseDatabase) {
             item.id = it.ref.key.toString()
             it.setValue(item)
         }
-    }
-
-    suspend fun up() {
-        allGroceries.clear()
-        fbdb.getReference("users/${user.uid}/Grocery").get().also {
-            it.result.children.forEach {
-                val dbModel = dbModel(
-                    id = it.ref.key as String,
-                    price = it.child("price").value as Double,
-                    itemName = it.child("itemName").value as String,
-                    quantity = (it.child("quantity").value as Long).toInt(),
-                    bought = it.child("bought").value as Boolean
-                )
-                allGroceries.add(dbModel)
-            }
-        }.await()
     }
 
     //suspend fun update(student: Student) = studentDao.update(student)

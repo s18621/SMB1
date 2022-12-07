@@ -12,37 +12,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.*
 
-@OptIn(DelicateCoroutinesApi::class)
 class ProductListActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityProductListBinding.inflate(layoutInflater) }
     private val modelAdapter by lazy { ModelAdapter() }
 
-    private val repo: databaseRepo
-    val firebaseDatabase: FirebaseDatabase
-    val allGroceries: MutableList<dbModel>
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance("https://smbgroceries-default-rtdb.europe-west1.firebasedatabase.app")
+    private val repo: databaseRepo = databaseRepo(firebaseDatabase)
 
-    init {
-        firebaseDatabase = FirebaseDatabase.getInstance("https://smbgroceries-default-rtdb.europe-west1.firebasedatabase.app")
-        repo = databaseRepo(firebaseDatabase)
-
-        val dbModel = dbModel(
-            "0",
-            2.99,
-            "Test",
-            1,
-            true
-        )
-        repo.insert(dbModel)
-        repo.delete(dbModel)
-        allGroceries = repo.allGroceries
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-
         val addButton: FloatingActionButton = binding.addValue
         addButton.setOnClickListener {
             val intent = Intent(this, AddActivity::class.java)
