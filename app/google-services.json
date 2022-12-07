@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "774327567534",
+    "project_id": "smbgroceries",
+    "storage_bucket": "smbgroceries.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774327567534:android:6090a03bba56a4c6c0593f",
+        "android_client_info": {
+          "package_name": "com.example.smb1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774327567534-5r16fn7k4307vsfkfati7sr36ndf1sif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh-C-tg05vxWjgIWpX2XMUrWChexM-N9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774327567534-5r16fn7k4307vsfkfati7sr36ndf1sif.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
